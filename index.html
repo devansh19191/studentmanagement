@@ -1,130 +1,33 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-class Student {
-    int id;
-    String name;
-    int age;
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+    <h1>Login</h1>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="loginMsg"></p>
+</div>
 
-    Student(int id, String name, int age) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-    }
+<!-- PORTAL PAGE -->
+<div id="portalPage" style="display:none;">
+    <h1>Student Management Portal</h1>
 
-    public String toString() {
-        return "ID: " + id + " | Name: " + name + " | Age: " + age;
-    }
-}
+    <input type="text" id="name" placeholder="Student Name">
+    <input type="number" id="age" placeholder="Age">
 
-public class StudentGUI extends JFrame {
-    private JTextField idField, nameField, ageField;
-    private JTextArea displayArea;
-    private ArrayList<Student> students;
+    <button onclick="addStudent()">Add Student</button>
+    <button onclick="logout()">Logout</button>
 
-    public StudentGUI() {
-        students = new ArrayList<>();
+    <ul id="list"></ul>
+</div>
 
-        setTitle("Devansh's Student Management System");
-        setSize(500, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-
-        // Top Panel (Inputs)
-        JPanel panel = new JPanel(new GridLayout(4, 2));
-        panel.add(new JLabel("ID:"));
-        idField = new JTextField();
-        panel.add(idField);
-
-        panel.add(new JLabel("Name:"));
-        nameField = new JTextField();
-        panel.add(nameField);
-
-        panel.add(new JLabel("Age:"));
-        ageField = new JTextField();
-        panel.add(ageField);
-
-        JButton addButton = new JButton("Add Student");
-        panel.add(addButton);
-
-        JButton clearButton = new JButton("Clear Fields");
-        panel.add(clearButton);
-
-        add(panel, BorderLayout.NORTH);
-
-        // Center (Display Area)
-        displayArea = new JTextArea();
-        add(new JScrollPane(displayArea), BorderLayout.CENTER);
-
-        // Bottom Panel (Buttons)
-        JPanel bottomPanel = new JPanel();
-
-        JButton showButton = new JButton("Show All");
-        JButton searchButton = new JButton("Search");
-        JButton deleteButton = new JButton("Delete");
-
-        bottomPanel.add(showButton);
-        bottomPanel.add(searchButton);
-        bottomPanel.add(deleteButton);
-
-        add(bottomPanel, BorderLayout.SOUTH);
-
-        // Button Actions
-        addButton.addActionListener(e -> addStudent());
-        showButton.addActionListener(e -> showStudents());
-        searchButton.addActionListener(e -> searchStudent());
-        deleteButton.addActionListener(e -> deleteStudent());
-        clearButton.addActionListener(e -> clearFields());
-
-        setVisible(true);
-    }
-
-    private void addStudent() {
-        try {
-            int id = Integer.parseInt(idField.getText());
-            String name = nameField.getText();
-            int age = Integer.parseInt(ageField.getText());
-
-            students.add(new Student(id, name, age));
-            displayArea.setText("Student Added!\n");
-        } catch (Exception e) {
-            displayArea.setText("Invalid Input!\n");
-        }
-    }
-
-    private void showStudents() {
-        displayArea.setText("");
-        for (Student s : students) {
-            displayArea.append(s + "\n");
-        }
-    }
-
-    private void searchStudent() {
-        int id = Integer.parseInt(idField.getText());
-        for (Student s : students) {
-            if (s.id == id) {
-                displayArea.setText("Found: " + s);
-                return;
-            }
-        }
-        displayArea.setText("Student not found!");
-    }
-
-    private void deleteStudent() {
-        int id = Integer.parseInt(idField.getText());
-        students.removeIf(s -> s.id == id);
-        displayArea.setText("Student Deleted (if existed)");
-    }
-
-    private void clearFields() {
-        idField.setText("");
-        nameField.setText("");
-        ageField.setText("");
-    }
-
-    public static void main(String[] args) {
-        new StudentGUI();
-    }
-}
+<script src="script.js"></script>
+</body>
+</html>
