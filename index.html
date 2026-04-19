@@ -1,5 +1,7 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 class Student {
     int id;
@@ -12,98 +14,117 @@ class Student {
         this.age = age;
     }
 
-    void display() {
-        System.out.println("ID: " + id + ", Name: " + name + ", Age: " + age);
+    public String toString() {
+        return "ID: " + id + " | Name: " + name + " | Age: " + age;
     }
 }
 
-public class StudentManagement {
-    public static void main(String[] args) {
-        ArrayList<Student> students = new ArrayList<>();
-        Scanner sc = new Scanner(System.in);
+public class StudentGUI extends JFrame {
+    private JTextField idField, nameField, ageField;
+    private JTextArea displayArea;
+    private ArrayList<Student> students;
 
-        while (true) {
-            System.out.println("\n--- Student Management System ---");
-            System.out.println("1. Add Student");
-            System.out.println("2. View All Students");
-            System.out.println("3. Search Student");
-            System.out.println("4. Delete Student");
-            System.out.println("5. Exit");
-            System.out.print("Enter choice: ");
+    public StudentGUI() {
+        students = new ArrayList<>();
 
-            int choice = sc.nextInt();
+        setTitle("Devansh's Student Management System");
+        setSize(500, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
-            switch (choice) {
-                case 1:
-                    System.out.print("Enter ID: ");
-                    int id = sc.nextInt();
-                    sc.nextLine(); // consume newline
+        // Top Panel (Inputs)
+        JPanel panel = new JPanel(new GridLayout(4, 2));
+        panel.add(new JLabel("ID:"));
+        idField = new JTextField();
+        panel.add(idField);
 
-                    System.out.print("Enter Name: ");
-                    String name = sc.nextLine();
+        panel.add(new JLabel("Name:"));
+        nameField = new JTextField();
+        panel.add(nameField);
 
-                    System.out.print("Enter Age: ");
-                    int age = sc.nextInt();
+        panel.add(new JLabel("Age:"));
+        ageField = new JTextField();
+        panel.add(ageField);
 
-                    students.add(new Student(id, name, age));
-                    System.out.println("Student Added Successfully!");
-                    break;
+        JButton addButton = new JButton("Add Student");
+        panel.add(addButton);
 
-                case 2:
-                    if (students.isEmpty()) {
-                        System.out.println("No students found.");
-                    } else {
-                        for (Student s : students) {
-                            s.display();
-                        }
-                    }
-                    break;
+        JButton clearButton = new JButton("Clear Fields");
+        panel.add(clearButton);
 
-                case 3:
-                    System.out.print("Enter ID to search: ");
-                    int searchId = sc.nextInt();
-                    boolean found = false;
+        add(panel, BorderLayout.NORTH);
 
-                    for (Student s : students) {
-                        if (s.id == searchId) {
-                            s.display();
-                            found = true;
-                            break;
-                        }
-                    }
+        // Center (Display Area)
+        displayArea = new JTextArea();
+        add(new JScrollPane(displayArea), BorderLayout.CENTER);
 
-                    if (!found) {
-                        System.out.println("Student not found.");
-                    }
-                    break;
+        // Bottom Panel (Buttons)
+        JPanel bottomPanel = new JPanel();
 
-                case 4:
-                    System.out.print("Enter ID to delete: ");
-                    int deleteId = sc.nextInt();
-                    boolean removed = false;
+        JButton showButton = new JButton("Show All");
+        JButton searchButton = new JButton("Search");
+        JButton deleteButton = new JButton("Delete");
 
-                    for (int i = 0; i < students.size(); i++) {
-                        if (students.get(i).id == deleteId) {
-                            students.remove(i);
-                            removed = true;
-                            System.out.println("Student Deleted!");
-                            break;
-                        }
-                    }
+        bottomPanel.add(showButton);
+        bottomPanel.add(searchButton);
+        bottomPanel.add(deleteButton);
 
-                    if (!removed) {
-                        System.out.println("Student not found.");
-                    }
-                    break;
+        add(bottomPanel, BorderLayout.SOUTH);
 
-                case 5:
-                    System.out.println("Exiting...");
-                    sc.close();
-                    System.exit(0);
+        // Button Actions
+        addButton.addActionListener(e -> addStudent());
+        showButton.addActionListener(e -> showStudents());
+        searchButton.addActionListener(e -> searchStudent());
+        deleteButton.addActionListener(e -> deleteStudent());
+        clearButton.addActionListener(e -> clearFields());
 
-                default:
-                    System.out.println("Invalid choice!");
+        setVisible(true);
+    }
+
+    private void addStudent() {
+        try {
+            int id = Integer.parseInt(idField.getText());
+            String name = nameField.getText();
+            int age = Integer.parseInt(ageField.getText());
+
+            students.add(new Student(id, name, age));
+            displayArea.setText("Student Added!\n");
+        } catch (Exception e) {
+            displayArea.setText("Invalid Input!\n");
+        }
+    }
+
+    private void showStudents() {
+        displayArea.setText("");
+        for (Student s : students) {
+            displayArea.append(s + "\n");
+        }
+    }
+
+    private void searchStudent() {
+        int id = Integer.parseInt(idField.getText());
+        for (Student s : students) {
+            if (s.id == id) {
+                displayArea.setText("Found: " + s);
+                return;
             }
         }
+        displayArea.setText("Student not found!");
+    }
+
+    private void deleteStudent() {
+        int id = Integer.parseInt(idField.getText());
+        students.removeIf(s -> s.id == id);
+        displayArea.setText("Student Deleted (if existed)");
+    }
+
+    private void clearFields() {
+        idField.setText("");
+        nameField.setText("");
+        ageField.setText("");
+    }
+
+    public static void main(String[] args) {
+        new StudentGUI();
     }
 }
